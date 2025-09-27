@@ -3,18 +3,25 @@ from django.db import models
 class Promotion(models.Model):
     description = models.CharField(max_length=255)
     discount = models.FloatField()
+    featured_product = models.ForeignKey('Product', on_delete= models.SET_NULL, null= True, related_name = "+")
+
 
 class Collection(models.Model):
     title = models.CharField(max_length=50)
 
+
+
 class Product(models.Model):
     title = models.CharField(max_length=255)
+    slug = models.SlugField()
     description = models.TextField()
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=5, decimal_places=2)
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
-    promotions = models.ManyToManyField(Promotion)
+    promotions = models.ManyToManyField(Promotion, related_name = "products")
+
+
 
 class Customer(models.Model):
     class Membership(models.TextChoices):
@@ -27,7 +34,9 @@ class Customer(models.Model):
     email = models.EmailField( max_length=100, unique=True)
     phone = models.CharField(max_length=20)
     birth_date = models.DateField(null=True)
-    membership = models.CharField(max_length=1, choices=Membership, default=Membership)
+    membership = models.CharField(max_length=1, choices=Membership, default=Membership.Bronze)
+
+
 
 
 class Order(models.Model):
@@ -39,11 +48,15 @@ class Order(models.Model):
     payment_status = models.CharField(max_length=1, choices=Payment_status, default=Payment_status.Pending)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
+
+
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quantity = models.PositiveSmallIntegerField()
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)
+
+
 
 class Address(models.Model):
     street = models.CharField(max_length=255)
@@ -51,8 +64,11 @@ class Address(models.Model):
     customer = models.OneToOneField(Customer,on_delete=models.CASCADE, primary_key=True)
     
 
+
 class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
+
+
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
