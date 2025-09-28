@@ -10,7 +10,7 @@
         {% endif %}
 
         
-        {% for product in products %}
+        <!-- {% for product in products %}
             <ul>
                 <li>{{product.title}}</li>
             </ul>
@@ -32,8 +32,32 @@
             <ul>
                 <li>{{item.id}} - {{item.title}} </li>
             </ul>
-        {% endfor %}
+        {% endfor %} -->
+
+        <h1>Select related and prefetch related</h1>
             
+            {% for product in products %}
+                <ul>
+                    <li>{{product.title}} - {{product.collection.title}}</li>
+                </ul>
+            {% endfor %}
+        
+            <h1>Last 5 Orders with Items</h1>
+            
+            {% for order in orders %}
+                <ul>
+                    <li>
+                        <strong>Order #{{order.id}}</strong> placed by {{order.customer.first_name}} {{order.customer.last_name}}
+                        <ul>
+                            {% for item in order.orderitem_set.all %}
+                                <li>{{item.product.title}} (Quantity: {{item.quantity}})</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            {% endfor %}
+
+            <h1>Total product</h1>
+                {{result}}
     </body>
 </html>
-

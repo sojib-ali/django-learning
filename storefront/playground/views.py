@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from store.models import Product, Customer, Collection, Order, OrderItem
+from django.db.models.aggregates import Count, Max, Min, Avg
 
 # Create your views here.
 def say_hello(request):
@@ -14,13 +15,13 @@ def say_hello(request):
     # #to know if a product exists - return a boolean
     # exists = Product.objects.filter(pk=0).exists()
 
-    product = Product.objects.filter(inventory__lt=10)
+    # product = Product.objects.filter(inventory__lt=10)
 
-    customer = Customer.objects.filter(id = 1)
+    # customer = Customer.objects.filter(id = 1)
 
-    collection = Collection.objects.filter(featured_product__isnull = True)
+    # collection = Collection.objects.filter(featured_product__isnull = True)
 
-    order = Order.objects.filter(customer__id=1)
+    # order = Order.objects.filter(customer__id=1)
 
     # order_item = OrderItem.objects.filter(product__collection__id=3)
     order_item = OrderItem.objects.all()
@@ -30,6 +31,18 @@ def say_hello(request):
     ordered_products = Product.objects.filter(id__in = OrderItem.objects.values('product_id').distinct()).order_by('title')
     
 
+    
 
+    # return render(request, 'hello.html', {'name': 'sojib', 'products' : product, 'customers' : customer, 'orders': order, 'ordered_products': ordered_products})
 
-    return render(request, 'hello.html', {'name': 'sojib', 'products' : product, 'customers' : customer, 'orders': order, 'ordered_products': ordered_products})
+    #select_related(1)
+    Product.objects.select_related('collection').all()
+
+     #prefetch_related(n)
+    Product.objects.select_related('promotions').select_related('collection').all()
+
+    queryset = Order.objects.select_related('customer').prefetch_related('orderitem_set__product').order_by('-placed_at')[:5]
+   
+    result = Product.objects.filter(collection__id=1).aggregate(count = Count('id'), min_price = Min('unit_price'))
+    
+    return render(request, 'hello.html', {'name': 'sojib', 'orders': queryset, 'result': result})
