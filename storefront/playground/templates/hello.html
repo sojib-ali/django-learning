@@ -27,6 +27,12 @@
                 <li>{{order.customer}}</li>
             </ul>
         {% endfor %}
+            <h1>ordered product</h1>
+        {% for item in ordered_products %}
+            <ul>
+                <li>{{item.id}} - {{item.title}} </li>
+            </ul>
+        {% endfor %}
             
     </body>
 </html>

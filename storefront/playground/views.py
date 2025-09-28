@@ -22,7 +22,14 @@ def say_hello(request):
 
     order = Order.objects.filter(customer__id=1)
 
-    order_item = OrderItem.objects.filter(product__collection__id=3)
+    # order_item = OrderItem.objects.filter(product__collection__id=3)
+    order_item = OrderItem.objects.all()
+
+    # ordered_products = sorted({item.product.title for item in order_item})
+
+    ordered_products = Product.objects.filter(id__in = OrderItem.objects.values('product_id').distinct()).order_by('title')
+    
 
 
-    return render(request, 'hello.html', {'name': 'sojib', 'products' : product, 'customers' : customer, 'orders': order}, )
+
+    return render(request, 'hello.html', {'name': 'sojib', 'products' : product, 'customers' : customer, 'orders': order, 'ordered_products': ordered_products})
