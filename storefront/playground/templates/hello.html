@@ -8,6 +8,26 @@
         <h1>hello world</h1>
 
         {% endif %}
+
+        
+        {% for product in products %}
+            <ul>
+                <li>{{product.title}}</li>
+            </ul>
+        {% endfor %}
+
+        {% for customer in customers %}
+            <ul>
+                <li>{{customer.first_name}}</li>
+            </ul>
+        {% endfor %}
+
+        {% for order in orders %}
+            <ul>
+                <li>{{order.customer}}</li>
+            </ul>
+        {% endfor %}
+            
     </body>
 </html>
 
