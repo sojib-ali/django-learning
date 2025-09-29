@@ -44,12 +44,12 @@
         
             <h1>Last 5 Orders with Items</h1>
             
-            {% for order in orders %}
+            {% for order in last_orders %}
                 <ul>
                     <li>
                         <strong>Order #{{order.id}}</strong> placed by {{order.customer.first_name}} {{order.customer.last_name}}
                         <ul>
-                            {% for item in order.orderitem_set.all %}
+                            {% for item in order.order_items.all %}
                                 <li>{{item.product.title}} (Quantity: {{item.quantity}})</li>
                             {% endfor %}
                         </ul>
@@ -57,7 +57,24 @@
                 </ul>
             {% endfor %}
 
+            
+            
+
+            
+            
             <h1>Total product</h1>
                 {{result}}
+
+            <h1>Number of order</h1>
+                {{order_quantity}}
+
+            <h1>Number of order</h1>
+                {{units_sold}}
+
+            <h1>first cusomer order</h1>
+                {{customer_order}}
+
+            <h1>price</h1>
+                {{price}}
     </body>
 </html>

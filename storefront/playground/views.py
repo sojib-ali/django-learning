@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from store.models import Product, Customer, Collection, Order, OrderItem
-from django.db.models.aggregates import Count, Max, Min, Avg
+from django.db.models.aggregates import Count, Max, Min, Avg, Sum
 
 # Create your views here.
 def say_hello(request):
@@ -39,10 +39,30 @@ def say_hello(request):
     Product.objects.select_related('collection').all()
 
      #prefetch_related(n)
-    Product.objects.select_related('promotions').select_related('collection').all()
+    Product.objects.prefetch_related('promotions').select_related('collection').all()
 
-    queryset = Order.objects.select_related('customer').prefetch_related('orderitem_set__product').order_by('-placed_at')[:5]
-   
-    result = Product.objects.filter(collection__id=1).aggregate(count = Count('id'), min_price = Min('unit_price'))
+    # queryset = Order.objects.select_related('customer').prefetch_related('orderitem_set__product').order_by('-placed_at')[:5]
+
+    #last 5 order
+    last_order = Order.objects.select_related('customer').prefetch_related('order_items__product').order_by('-placed_at')[:5]
+
+
+
+    result = Product.objects.aggregate(count = Count('id'), min_price = Min('unit_price'))
+
+    order_quantity = Order.objects.aggregate(count = Count('id'))
+
+    # number of products 1 have shold
+    sold_item = OrderItem.objects.filter(product__id=1).aggregate(unit_sold = Sum('quantity'))
+
+    # how many orders has customer 1 placed?
+    order_by_customer_1 = Order.objects.filter(customer__id = 1).aggregate(order_count = Count('id'))
+
+    #what is the min, max and average price of the product in collection 3
+    price = Product.objects.filter(collection__id=3).aggregate(
+        min_price=Min('unit_price'),
+        avg_price=Avg('unit_price'),
+        max_price=Max('unit_price')
+    )
     
-    return render(request, 'hello.html', {'name': 'sojib', 'orders': queryset, 'result': result})
+    return render(request, 'hello.html', {'name': 'sojib', 'result': result, 'order_quantity': order_quantity, 'last_orders': last_order, 'units_sold':sold_item, 'customer_order': order_by_customer_1, 'price': price })
