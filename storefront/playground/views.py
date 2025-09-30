@@ -65,4 +65,17 @@ def say_hello(request):
         max_price=Max('unit_price')
     )
     
-    return render(request, 'hello.html', {'name': 'sojib', 'result': result, 'order_quantity': order_quantity, 'last_orders': last_order, 'units_sold':sold_item, 'customer_order': order_by_customer_1, 'price': price })
+    return render(request, 'hello.html', {'name': 'sojib', 'result': result, 'order_quantity': order_quantity, 'last_orders': list(last_order), 'units_sold':sold_item, 'customer_order': order_by_customer_1, 'price': price })
+
+#how to insert values
+def insert_value(request):
+    collection = Collection()
+    collection.title = 'Video Games'
+    collection.featured_product = Product(pk=1)
+    collection.save()
+
+#or
+    Collection.objects.create(name = 'a', featured_product_id = 1)
+
+
+# how
