@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
@@ -20,6 +20,8 @@ class InventoryFilter(admin.SimpleListFilter):
 
 
 
+
+
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name', 'membership']
@@ -30,6 +32,8 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    search_fields= ['title']
+    actions = ['clear_inventory']
     list_display = ['title', 'unit_price', 'inventory_status', 'collection_title']
     list_editable = ['unit_price']
     list_per_page = 10
@@ -46,9 +50,26 @@ class ProductAdmin(admin.ModelAdmin):
             return 'Low'
         return 'Ok'
 
+    @admin.action(description='Clear inventory')
+    def clear_inventory(self, request, queryset):
+        updated_count = queryset.update(inventory =0)
+        self.message_user(
+            request,
+            f'{updated_count} products were successfully updated',
+            messages.ERROR
+        )
+
+class OrderItemInline(admin.StackedInline):
+    autocomplete_fields = ['product']
+    min_num = 1
+    max_num = 10
+    extra = 0
+    model = OrderItem
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['customer']
+    inlines = [OrderItemInline]
     list_display = ['id', 'placed_at', 'customer']
 
 #to show calculated relational field
