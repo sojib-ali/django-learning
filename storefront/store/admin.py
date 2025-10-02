@@ -75,7 +75,7 @@ class OrderAdmin(admin.ModelAdmin):
 #to show calculated relational field
 @admin.register(Collection)
 class CollectionAdmin(admin.ModelAdmin):
-    list_display = ['title', 'products_count']
+    list_display = ['id', 'title', 'products_count']
 
     @admin.display(ordering = 'products_count')
     def products_count(self, collection):
