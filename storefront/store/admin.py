@@ -2,7 +2,7 @@ from django.contrib import admin, messages
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
-from .models import Customer, Product, Order, OrderItem, Collection
+from .models import Customer, Product, Order, OrderItem, Collection, Promotion
 
 class InventoryFilter(admin.SimpleListFilter):
     title = 'inventory'
@@ -96,5 +96,6 @@ class CollectionAdmin(admin.ModelAdmin):
         )
 
 admin.site.register(OrderItem)
+admin.site.register(Promotion)
 
 
