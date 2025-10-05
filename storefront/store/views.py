@@ -10,14 +10,21 @@ from .serializers import ProductSerializer, CollectionSerializer
 
 
 class ProductList(ListCreateAPIView):
-    def get_queryset(self):
-        return Product.objects.select_related('collection').all()
-    
-    def get_serializer(self):
-        return ProductSerializer
-    
+    queryset = Product.objects.select_related('collection').all()
+    serializer_class = ProductSerializer
+
     def get_serializer_context(self):
         return {'request': self.request}
+
+    # def get_queryset(self):
+    #     return Product.objects.select_related('collection').all()
+    
+    # def get_serializer(self):
+    #     return ProductSerializer
+    
+    
+
+    #---------------------------------------------------------------------
 
     # def get(self, request):
     #     products =  Product.objects.select_related('collection').all()
@@ -80,17 +87,22 @@ class ProductDetail(APIView):
 #             return Response({"error": "Product cannot be deleted because it is associated with an order item"}, status = status.HTTP_405_METHOD_NOT_ALLOWED)
 #         product.delete()
 #         return Response(status = status.HTTP_204_NO_CONTENT)
+
+
     
-class CollectionList(APIView):
-    def get(self, request):
-        collections = Collection.objects.annotate(products_count = Count('prod_collections')).all()
-        serializer = CollectionSerializer(collections, many = True)
-        return Response(serializer.data)
-    def post(self, request):
-        serializer = CollectionSerializer(data = request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status = status.HTTP_201_CREATED)
+class CollectionList(ListCreateAPIView):
+    queryset = Collection.objects.annotate(products_count = Count('prod_collections')).all()
+    serializer_class = CollectionSerializer
+
+    # def get(self, request):
+    #     collections = Collection.objects.annotate(products_count = Count('prod_collections')).all()
+    #     serializer = CollectionSerializer(collections, many = True)
+    #     return Response(serializer.data)
+    # def post(self, request):
+    #     serializer = CollectionSerializer(data = request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #     return Response(serializer.data, status = status.HTTP_201_CREATED)
 
 
 # @api_view(['GET', 'POST'])
