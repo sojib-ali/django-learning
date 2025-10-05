@@ -1,11 +1,15 @@
 from django.shortcuts import get_object_or_404
+from django.db.models.aggregates import Count
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Product
-from .serializers import ProductSerializer
+from .models import Product, Collection
+from .serializers import ProductSerializer, CollectionSerializer
 
-@api_view(['Get', 'POST'])
+
+
+
+@api_view(['GET', 'POST'])
 def product_list(request):
     if request.method == 'GET':
         products =  Product.objects.select_related('collection').all()
@@ -33,7 +37,21 @@ def product_detail(request,id):
             return Response({"error": "Product cannot be deleted because it is associated with an order item"}, status = status.HTTP_405_METHOD_NOT_ALLOWED)
         product.delete()
         return Response(status = status.HTTP_204_NO_CONTENT)
+    
 
-@api_view()
+@api_view(['GET', 'POST'])
+def collection_list(request):
+    if request.method == 'GET':
+        collections = Collection.objects.annotate(products_count = Count('prod_collections')).all()
+        serializer = CollectionSerializer(collections, many = True)
+        return Response(serializer.data)
+    
+    elif request.method == 'POST':
+        serializer = CollectionSerializer(data = request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+@api_view(['GET', 'PUT', 'DELETE'])
 def collection_detail(request, pk):
     return Response('ok')
