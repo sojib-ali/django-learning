@@ -18,10 +18,6 @@ class InventoryFilter(admin.SimpleListFilter):
             return queryset.filter(inventory__lt = 10)
     
 
-
-
-
-
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name', 'membership']
