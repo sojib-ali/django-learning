@@ -6,8 +6,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .models import Product, Collection, OrderItem
-from .serializers import ProductSerializer, CollectionSerializer
+from .models import Product, Collection, OrderItem, Review
+from .serializers import ProductSerializer, CollectionSerializer, ReviewSerializer
 
 
 class ProductViewSet(ModelViewSet):
@@ -36,3 +36,16 @@ class CollectionViewSet(ModelViewSet):
 
         return super().destroy(request, *args, **kwargs)
         
+
+class ReviewViewSet(ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+
+    def get_queryset(self):
+        return Review.objects.filter(product_id = self.kwargs['product_pk'])
+
+    def perform_create(self, serializer):
+        serializer.save(product_id=self.kwargs['product_pk']) 
+
+    # def get_serializer_context(self):
+    #     return {'product_id': self.kwargs['product_pk']}
