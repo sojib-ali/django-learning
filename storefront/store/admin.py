@@ -2,7 +2,7 @@ from django.contrib import admin, messages
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
-from .models import Customer, Product, Order, OrderItem, Collection, Promotion
+from .models import Customer, Product, Order, OrderItem, Collection, Promotion, CartItem, Cart
 
 class InventoryFilter(admin.SimpleListFilter):
     title = 'inventory'
@@ -35,6 +35,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_per_page = 10
     list_select_related = ['collection']
     list_filter = ['collection', 'last_update', InventoryFilter]
+    prepopulated_fields = {'slug': ('title',)}
 
     #to show some selected field
     def collection_title(self, product):
@@ -91,7 +92,18 @@ class CollectionAdmin(admin.ModelAdmin):
             products_count = Count('prod_collections')
         )
 
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    list_display = ['id']
+
+@admin.register(CartItem)
+class CartItemAdmin(admin.ModelAdmin):
+    list_display = ['id']
+
+
 admin.site.register(OrderItem)
 admin.site.register(Promotion)
+
+
 
 
