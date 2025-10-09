@@ -75,6 +75,10 @@ class AddCartItemSerializer(serializers.ModelSerializer):
         model = CartItem
         fields =['id', 'product_id', 'quantity']
 
+class UpdateCartItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartItem
+        fields = ['quantity']
 
 class CartSerializer(serializers.ModelSerializer): 
     id = serializers.UUIDField(read_only=True)
@@ -87,6 +91,10 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ['id', 'items', 'total_price']
+
+
+
+
 
 
 
