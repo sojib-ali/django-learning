@@ -47,8 +47,9 @@ INSTALLED_APPS = [
     'playground',
     'debug_toolbar',
     'store',
-    'store_custom',
     'tags',
+    'likes',
+    'core'
 ]
 
 MIDDLEWARE = [
@@ -102,7 +103,7 @@ WSGI_APPLICATION = 'storefront.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'shopdb',
+        'NAME': 'shopfrontdb',
         'USER': 'postgres',
         'PASSWORD': '6545',
         'HOST': 'localhost', 
@@ -156,3 +157,5 @@ REST_FRAMEWORK = {
     # 'DEFAULT_PAGINATION_CLASS' : 'rest_framework.pagination.PageNumberPagination',
     # 'PAGE_SIZE': 10
 }
+
+AUTH_USER_MODEL = 'core.User'
