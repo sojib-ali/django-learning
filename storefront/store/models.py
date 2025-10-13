@@ -30,15 +30,13 @@ class Product(models.Model):
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT, related_name = 'prod_collections')
-    promotions = models.ManyToManyField(Promotion, related_name = "products")
+    promotions = models.ManyToManyField(Promotion, blank=True, related_name = "products")
 
     def __str__(self):
         return self.title
     
     class Meta:
         ordering = ['title']
-
-
 
 
 

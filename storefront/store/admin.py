@@ -48,7 +48,7 @@ class CustomerAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     search_fields= ['title']
     actions = ['clear_inventory']
-    list_display = ['title', 'unit_price', 'inventory_status', 'collection_title']
+    list_display = ['id', 'title', 'unit_price', 'inventory_status', 'collection_title']
     list_editable = ['unit_price']
     list_per_page = 10
     list_select_related = ['collection']
@@ -119,7 +119,12 @@ class CartItemAdmin(admin.ModelAdmin):
     list_display = ['id']
 
 
-admin.site.register(OrderItem)
+@admin.register(OrderItem)
+class OrderItem(admin.ModelAdmin):
+    list_display = ['id', 'product', 'quantity']
+
+
+# admin.site.register(OrderItem)
 admin.site.register(Promotion)
 
 
