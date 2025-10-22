@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from store.models import Product, Customer, Collection, Order, OrderItem
 from django.db.models.aggregates import Count, Max, Min, Avg, Sum
+from .tasks import notify_customer
 
 # Create your views here.
 def say_hello(request):
@@ -65,7 +66,11 @@ def say_hello(request):
         max_price=Max('unit_price')
     )
     
-    return render(request, 'hello.html', {'name': 'sojib', 'result': result, 'order_quantity': order_quantity, 'last_orders': list(last_order), 'units_sold':sold_item, 'customer_order': order_by_customer_1, 'price': price })
+    # return render(request, 'hello.html', {'name': 'sojib', 'result': result, 'order_quantity': order_quantity, 'last_orders': list(last_order), 'units_sold':sold_item, 'customer_order': order_by_customer_1, 'price': price })
+
+def celery_hello(request):
+    notify_customer.delay('Hello')
+    return render(request, 'hello.html', {'name': 'Mosh'})
 
 #how to insert values
 def insert_value(request):
