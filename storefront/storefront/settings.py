@@ -197,4 +197,4 @@ CELERY_BEAT_SCHEDULE = {
         # 'schedule': crontab(minute='*/15') <-- evey 15 minutes
         'args': ['Hello world']
     }
-}
+}  
